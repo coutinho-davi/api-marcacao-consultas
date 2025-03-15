@@ -7,7 +7,6 @@ import com.fiap.ecr.api_marcacao_consultas.dto.LoginRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.fiap.ecr.api_marcacao_consultas.dto.LoginRequest;
 
 import java.util.Map;
 
@@ -23,8 +22,13 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public ResponseEntity<Usuario> criarUsuario(@RequestBody Usuario usuario) {
-        return ResponseEntity.ok(usuarioService.salvarUsuario(usuario));
+    public ResponseEntity<?> criarUsuario(@RequestBody Usuario usuario) {
+        try {
+            Usuario novoUsuario = usuarioService.salvarUsuario(usuario);
+            return ResponseEntity.ok(novoUsuario);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @PostMapping("/login")
